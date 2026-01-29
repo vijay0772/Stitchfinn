@@ -187,16 +187,3 @@
 **Bounty (Voice Bot Channel) is ✅ COMPLETE**
 
 **Total: 100% requirements met + bonus implemented**
-
----
-
-## 🔧 Optional Improvements (Not Required)
-
-- [ ] Real STT API integration (currently mocked)
-- [ ] Real TTS API integration (edge-tts is optional; mock fallback exists)
-- [ ] Streaming audio upload (currently single upload)
-- [ ] Phone call integration (alternative to web UI)
-- [ ] Async mode (job queue + polling)
-- [ ] Tool/plugin framework
-- [ ] Observability (traces/metrics beyond correlation IDs)
-- [ ] RBAC (admin vs analyst roles)
