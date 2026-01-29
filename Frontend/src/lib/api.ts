@@ -17,6 +17,10 @@ export function setApiBaseUrl(url: string) {
   API_BASE_URL = url.replace(/\/+$/, '');
 }
 
+export function getApiBaseUrl(): string {
+  return API_BASE_URL;
+}
+
 export function setApiKey(key: string) {
   API_KEY = key;
 }

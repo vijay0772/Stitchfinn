@@ -17,7 +17,7 @@ import { AgentsView } from './components/AgentsView';
 import { SessionsView } from './components/SessionsView';
 import { UsageView } from './components/UsageView';
 import { SettingsView } from './components/SettingsView';
-import { setApiKey as apiSetApiKey, setApiBaseUrl, validateApiKeyOnce, getTenantMe } from './lib/api';
+import { setApiKey as apiSetApiKey, setApiBaseUrl, getApiBaseUrl, validateApiKeyOnce, getTenantMe } from './lib/api';
 
 type NavigationItem = 'dashboard' | 'agents' | 'sessions' | 'usage' | 'settings';
 
@@ -84,7 +84,13 @@ export default function App() {
     } catch (err: any) {
       setIsAuthenticated(false);
       apiSetApiKey(''); // clear any previous key
-      setLoginError(err.message || 'Invalid API key');
+      const msg = err.message || 'Invalid API key';
+      const isNetworkError = msg === 'Failed to fetch' || msg.includes('Load failed');
+      const baseUrl = getApiBaseUrl();
+      const hint = isNetworkError
+        ? ` Cannot reach API at ${baseUrl}. If deployed, set VITE_API_BASE_URL in Vercel and redeploy.`
+        : '';
+      setLoginError(msg + hint);
     } finally {
       setLoginLoading(false);
     }
