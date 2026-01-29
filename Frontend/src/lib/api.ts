@@ -21,6 +21,27 @@ export function getApiBaseUrl(): string {
   return API_BASE_URL;
 }
 
+let runtimeConfigPromise: Promise<void> | null = null;
+
+/** Fetches /api/config (Vercel serverless) and sets API_BASE_URL from env at runtime. Call before first API call when deployed. */
+export async function ensureRuntimeConfig(): Promise<void> {
+  if (runtimeConfigPromise) return runtimeConfigPromise;
+  runtimeConfigPromise = (async () => {
+    try {
+      const res = await fetch('/api/config', { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = (await res.json()) as { apiBaseUrl?: string };
+      const url = data?.apiBaseUrl?.trim();
+      if (url) {
+        API_BASE_URL = url.replace(/\/+$/, '');
+      }
+    } catch {
+      // ignore; keep build-time default
+    }
+  })();
+  return runtimeConfigPromise;
+}
+
 export function setApiKey(key: string) {
   API_KEY = key;
 }

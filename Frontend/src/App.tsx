@@ -17,7 +17,7 @@ import { AgentsView } from './components/AgentsView';
 import { SessionsView } from './components/SessionsView';
 import { UsageView } from './components/UsageView';
 import { SettingsView } from './components/SettingsView';
-import { setApiKey as apiSetApiKey, setApiBaseUrl, getApiBaseUrl, validateApiKeyOnce, getTenantMe } from './lib/api';
+import { setApiKey as apiSetApiKey, setApiBaseUrl, getApiBaseUrl, ensureRuntimeConfig, validateApiKeyOnce, getTenantMe } from './lib/api';
 
 type NavigationItem = 'dashboard' | 'agents' | 'sessions' | 'usage' | 'settings';
 
@@ -42,9 +42,10 @@ export default function App() {
       setApiKey(savedKey);
       setTenantName(savedTenantName || 'Loading…');
       setIsAuthenticated(true);
-      // Refresh tenant name from backend
+      // Refresh tenant name from backend (ensure runtime API URL first)
       (async () => {
         try {
+          await ensureRuntimeConfig();
           const t = await getTenantMe();
           setTenantName(t.name);
           localStorage.setItem('tenantName', t.name);
@@ -68,6 +69,8 @@ export default function App() {
     setLoginError(null);
     setLoginLoading(true);
     try {
+      // Get API URL from server at runtime (so VITE_API_BASE_URL works without rebuild)
+      await ensureRuntimeConfig();
       // Validate with backend using a lightweight call
       await validateApiKeyOnce(trimmed);
       // If we reach here, key is valid
