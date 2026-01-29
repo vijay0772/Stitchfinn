@@ -87,7 +87,6 @@ StitchFin-Assignment/
 │   │   │   ├── stt_mock.py     # fake transcript
 │   │   │   └── tts_mock.py     # edge-tts or beep
 │   │   └── ...
-│   ├── migrations/
 │   └── requirements.txt
 ├── Frontend/                   # React + Vite
 │   ├── api/
@@ -130,7 +129,7 @@ Then:
 uvicorn app.main:app --reload
 ```
 
-Apply migrations (see `Backend/migrations/`) so tables exist. Create a tenant (e.g. `POST /tenants`) and use the returned API key in the frontend.
+Ensure DB tables exist (schema as needed). Create a tenant (e.g. `POST /tenants`) and use the returned API key in the frontend.
 
 ### Frontend
 
@@ -149,7 +148,7 @@ Use the API key from the backend to sign in. The app defaults to `http://127.0.0
 ### Backend (e.g. Railway, Render)
 
 - Set env: `DATABASE_URL`, `API_KEY_PEPPER`, and optionally `CORS_ORIGINS` (e.g. `https://your-frontend.vercel.app`). The app also allows a known Vercel origin by default.
-- Run migrations against the deployed DB.
+- Ensure DB tables exist on the deployed DB.
 - Use the deployed backend URL as the frontend’s API base.
 
 ### Frontend (Vercel)
