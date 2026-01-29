@@ -1,0 +1,38 @@
+# Secrets – never commit
+.env
+.env.*
+!.env.example
+
+# Python
+Backend/venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+.eggs/
+*.egg-info/
+*.egg
+
+# Node
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build / cache
+*.log
+.cache/
