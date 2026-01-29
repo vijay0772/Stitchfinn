@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette.responses import Response
 from app.routers.tenants import router as tenants_router
 from app.routers.agents import router as agents_router
 from app.routers.sessions import router as sessions_router
@@ -8,7 +9,12 @@ from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="VocalBridge Agent Gateway (Supabase + FastAPI)")
 
-_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+# Always allow localhost and known Vercel frontend (env can add more)
+_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://stitchfinn-atbb.vercel.app",
+]
 if settings.cors_origins:
     _origins.extend(o.strip() for o in settings.cors_origins.split(",") if o.strip())
 
@@ -24,6 +30,18 @@ app.add_middleware(
 @app.get("/")
 def root():
     return {"ok": True, "service": "agent-gateway"}
+
+
+def _options_200():
+    return Response(status_code=200)
+
+
+# Explicit OPTIONS handlers so preflight always returns 200 (CORS headers added by middleware)
+app.add_api_route("/agents", _options_200, methods=["OPTIONS"])
+app.add_api_route("/agents/", _options_200, methods=["OPTIONS"])
+app.add_api_route("/agents/{agent_id:int}", _options_200, methods=["OPTIONS"])
+app.add_api_route("/usage", _options_200, methods=["OPTIONS"])
+app.add_api_route("/sessions", _options_200, methods=["OPTIONS"])
 
 app.include_router(tenants_router)
 app.include_router(agents_router)
